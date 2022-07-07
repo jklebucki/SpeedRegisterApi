@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SpeedRegisterApi.Models
+﻿namespace SpeedRegisterApi.Models
 {
     public partial class Terminarz
     {

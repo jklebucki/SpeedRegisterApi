@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using SpeedRegisterApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
