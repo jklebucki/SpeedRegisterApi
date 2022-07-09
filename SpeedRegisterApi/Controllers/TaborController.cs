@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpeedRegisterApi.Data;
 using SpeedRegisterApi.DTO;
+using SpeedRegisterApi.Models;
 
 namespace SpeedRegisterApi.Controllers
 {
@@ -9,34 +11,26 @@ namespace SpeedRegisterApi.Controllers
     {
 
         private readonly InterlanDbContext _context;
+        public readonly IMapper _mapper;
 
-        public TaborController(InterlanDbContext context)
+        public TaborController(InterlanDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
         [HttpGet("{id}")]
-        public async Task<IEnumerable<TaborDto>> GetTabor([FromRoute] string id)
+        public async Task<IActionResult> GetTabor([FromRoute] string id)
         {
             List<TaborDto> taborList = new List<TaborDto>();
             id = id.ToUpper().Replace(" ", "");
             var tabor = await _context.Tabor.Where(nr => nr.NrRej.ToUpper().Replace(" ", "").Contains(id) && nr.Aktywny == 1).ToListAsync();
-            foreach (var el in tabor)
-            {
-                taborList.Add(new TaborDto()
-                {
-                    IdTaboru = el.IdTaboru,
-                    NrRej = el.NrRej,
-                    Marka = el.Marka,
-                    Model = el.Model,
-                    Wlasciciel = el.Wlasciciel,
-                    Dzial = el.Dzial,
-                    Podwykonawca = el.Podwykonawca
-                });
-            }
-            Console.WriteLine($"{taborList.Count}");
-            return taborList;
+            var taborDto = _mapper.Map<List<TaborDto>>(tabor);
+            if (taborDto != null)
+                return Ok(taborDto);
+            else
+                return BadRequest("No data found");
         }
 
     }

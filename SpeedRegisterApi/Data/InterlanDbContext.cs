@@ -17,14 +17,6 @@ namespace SpeedRegisterApi.Data
         public virtual DbSet<Tabor> Tabor { get; set; } = null!;
         public virtual DbSet<Terminarz> Terminarz { get; set; } = null!;
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer("Data Source=192.168.151.24\\CTENERGYDB1;Initial Catalog=Interlan;Integrated Security=False;User ID=inter ;Password=maszYin5;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True");
-        //    }
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tabor>(entity =>

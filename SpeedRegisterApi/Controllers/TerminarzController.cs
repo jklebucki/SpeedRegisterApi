@@ -19,23 +19,15 @@ namespace SpeedRegisterApi.Controllers
             _context = context;
         }
 
-        // GET: api/Terminarz
         [HttpGet]
         public async Task<IEnumerable<Terminarz>> GetTerminarz()
         {
-            return await _context.Terminarz.ToListAsync(); //_context.Terminarz;
+            return await _context.Terminarz.ToListAsync(); 
         }
 
-
-        // GET: api/Terminarz/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTerminarz([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var terminarz = await _context.Terminarz.SingleOrDefaultAsync(m => m.IdTerminarz == id);
 
             if (terminarz == null)
@@ -46,7 +38,6 @@ namespace SpeedRegisterApi.Controllers
             return Ok(terminarz);
         }
 
-        // PUT: api/Terminarz/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTerminarz([FromRoute] int id, [FromBody] Terminarz terminarz)
         {
@@ -82,18 +73,12 @@ namespace SpeedRegisterApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Terminarz
         [HttpPost]
-        public async Task<IActionResult> PostTerminarz([FromBody] Models.MobileAppData md)
+        public async Task<IActionResult> PostTerminarz([FromBody] MobileAppData mobileAppData)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
 
             Tabor? auto = new Tabor();
-            var barcode = md.barcode.Replace(" ", "").ToUpper();
+            var barcode = mobileAppData.barcode.Replace(" ", "").ToUpper();
             string nrR = "";
 
             if (barcode.Length > 2)
@@ -131,11 +116,11 @@ namespace SpeedRegisterApi.Controllers
             }
 
             //Uzupełniam resztę danych
-            terminarz.IdTerminarz = idFromProc();
+            terminarz.IdTerminarz = GetNewTerminalId();
             terminarz.Data = DateTime.Now;
             terminarz.Rodzaj = "Zwrot dokumentów";
             terminarz.Uwagi = "Dane z aplikacji mobilnej";
-            terminarz.Uzytkownik = md.location;
+            terminarz.Uzytkownik = mobileAppData.location;
             terminarz.UzytkownikWyk = null;
             terminarz.DataWykonania = null;
             terminarz.Klient = "Citronex Trans Logistic Sp. z o.o.";
@@ -200,7 +185,7 @@ namespace SpeedRegisterApi.Controllers
             return _context.Terminarz.Any(e => e.IdTerminarz == id);
         }
 
-        private int idFromProc()
+        private int GetNewTerminalId()
         {
             DbCommand cmd = _context.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "[dbo].[GENER_ID]";

@@ -13,8 +13,6 @@ namespace SpeedRegisterApi.Controllers
         {
             _context = context;
             var count = _context.Terminarz.Count().ToString();
-            Console.WriteLine("Liczba zapisów w DB: " + count);
-
         }
 
         [Route("api/GetFirstTerminarz")]
