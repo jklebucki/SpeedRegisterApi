@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SpeedRegisterApi.Data;
-using SpeedRegisterApi.DTO;
-using SpeedRegisterApi.Repositories;
 using SpeedRegisterApi.Services;
 
 namespace SpeedRegisterApi.Controllers
 {
+    [Produces("application/json")]
+    [Route("api/Tabor")]
     public class TaborController : Controller
     {
 

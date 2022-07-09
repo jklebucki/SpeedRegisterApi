@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SpeedRegisterApi.Data;
-using SpeedRegisterApi.DTO;
 using SpeedRegisterApi.Models;
 
 namespace SpeedRegisterApi.Repositories
