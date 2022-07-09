@@ -18,12 +18,12 @@ namespace SpeedRegisterApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTabor([FromRoute] string id)
+        [HttpGet("{vehiclePlateNumber}")]
+        public async Task<IActionResult> GetTabor([FromRoute] string vehiclePlateNumber)
         {
             try
             {
-                var taborDto = await _taborService.GetTaborListByCarNumberPlateAsync(id);
+                var taborDto = await _taborService.GetTaborListByCarNumberPlateAsync(vehiclePlateNumber);
                 return Ok(taborDto);
             }
             catch (Exception ex)
