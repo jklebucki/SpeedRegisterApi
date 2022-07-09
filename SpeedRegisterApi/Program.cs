@@ -6,7 +6,7 @@ using SpeedRegisterApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddDbContext<InterlanDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("MsSqlConnectionTest")));
+builder.Services.AddDbContext<InterlanDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("MsSqlConnection")));
 builder.Services.AddTransient<ITaborRepository, TaborRepository>();
 builder.Services.AddTransient<ITerminarzRepository, TerminarzRepository>();
 builder.Services.AddTransient<ITerminarzService, TerminarzService>();
