@@ -22,7 +22,7 @@ namespace SpeedRegisterApi.Services
             var carPlateNumber = mobileAppData.barcode.Replace(" ", "").ToUpper();
             carPlateNumber = carPlateNumber.Substring(0, (carPlateNumber.Length - 1));
             var auto = await _taborRepository.GetTaborByCarNumberPlateAsync(carPlateNumber);
-            var terminarz = GenerateTerminarz();   
+            var terminarz = GenerateTerminarz();
             terminarz.Uzytkownik = mobileAppData.location;
             terminarz.Opis = description;
             terminarz.Tabor = carPlateNumber;
@@ -49,7 +49,7 @@ namespace SpeedRegisterApi.Services
             }
             else if (barcode.Substring(barcode.Length - 1, 1) == "F" && barcode.Length > 2)
             {
-               return "Fracht";
+                return "Fracht";
             }
             else
             {

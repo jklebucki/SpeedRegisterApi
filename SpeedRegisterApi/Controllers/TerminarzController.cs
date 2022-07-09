@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using SpeedRegisterApi.Data;
 using SpeedRegisterApi.Models;
 using SpeedRegisterApi.Services;
-using System.Data;
-using System.Data.Common;
 
 namespace SpeedRegisterApi.Controllers
 {

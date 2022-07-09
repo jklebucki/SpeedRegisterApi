@@ -2,9 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using SpeedRegisterApi.Data;
 using SpeedRegisterApi.Models;
-using System.Data.Common;
 using System.Data;
-using System.Linq;
+using System.Data.Common;
 
 namespace SpeedRegisterApi.Repositories
 {

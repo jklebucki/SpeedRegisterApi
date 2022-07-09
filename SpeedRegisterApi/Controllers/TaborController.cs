@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpeedRegisterApi.Data;
 using SpeedRegisterApi.DTO;
-using SpeedRegisterApi.Models;
 
 namespace SpeedRegisterApi.Controllers
 {
