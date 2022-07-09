@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SpeedRegisterApi.Data;
 using SpeedRegisterApi.Models;
+using SpeedRegisterApi.Services;
 using System.Data;
 using System.Data.Common;
 
@@ -12,30 +13,34 @@ namespace SpeedRegisterApi.Controllers
     [Route("api/Terminarz")]
     public class TerminarzController : Controller
     {
-        private readonly InterlanDbContext _context;
+        private readonly ITerminarzService _terminarzService;
+        private readonly ILogger _logger;
 
-        public TerminarzController(InterlanDbContext context)
+        public TerminarzController(ILogger<TerminarzController> ilogger, ITerminarzService terminarzService)
         {
-            _context = context;
+            _terminarzService = terminarzService;
+            _logger = ilogger;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Terminarz>> GetTerminarz()
         {
-            return await _context.Terminarz.ToListAsync(); 
+            return await _terminarzService.GetFullTerminarzAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTerminarz([FromRoute] int id)
         {
-            var terminarz = await _context.Terminarz.SingleOrDefaultAsync(m => m.IdTerminarz == id);
-
-            if (terminarz == null)
+            try
             {
-                return NotFound();
+                var terminarz = await _terminarzService.GetTerminarzAsync(id);
+                return Ok(terminarz);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
             }
 
-            return Ok(terminarz);
         }
 
         [HttpPut("{id}")]
@@ -52,172 +57,45 @@ namespace SpeedRegisterApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(terminarz).State = EntityState.Modified;
+            terminarz.IdTerminarz = id;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _terminarzService.UpdateTerminarzAsync(terminarz);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!TerminarzExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(ex.Message);
             }
 
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostTerminarz([FromBody] MobileAppData mobileAppData)
+        public async Task<IActionResult> PostScheduleAsync([FromBody] MobileAppData mobileAppData)
         {
-
-            Tabor? auto = new Tabor();
-            var barcode = mobileAppData.barcode.Replace(" ", "").ToUpper();
-            string nrR = "";
-
-            if (barcode.Length > 2)
-                nrR = barcode.Substring(0, (barcode.Length - 1));
-
-            //Wyszukuję auto
             try
             {
-                auto = await _context.Tabor.FirstOrDefaultAsync(nr => nr.NrRej == nrR);
-                if (auto == null)
-                {
-                    return NotFound("Nie znaleziono pojazdu " + nrR);
-                }
+                var terminarz = await _terminarzService.CreateNewEntryAsync(mobileAppData);
+                return Ok(terminarz);
             }
-            catch
+            catch (Exception ex)
             {
-                return NotFound("Nie znaleziono pojazdu " + nrR);
+                return BadRequest(ex.Message);
             }
-
-            //Tworzę nowy obiekt terminarz
-            Terminarz terminarz = new Terminarz();
-            //Na początku ustawiam opis
-            if (barcode.Substring(barcode.Length - 1, 1) == "R" && barcode.Length > 2)
-            {
-                terminarz.Opis = "Rozliczenie kierowcy";
-            }
-            else if (barcode.Substring(barcode.Length - 1, 1) == "F" && barcode.Length > 2)
-            {
-                terminarz.Opis = "Fracht";
-            }
-            else
-            {
-                //jeśli nie ma F lub R przerywam i zgłaszam błąd
-                return BadRequest("Nieznany typ dokumentu");
-            }
-
-            //Uzupełniam resztę danych
-            terminarz.IdTerminarz = GetNewTerminalId();
-            terminarz.Data = DateTime.Now;
-            terminarz.Rodzaj = "Zwrot dokumentów";
-            terminarz.Uwagi = "Dane z aplikacji mobilnej";
-            terminarz.Uzytkownik = mobileAppData.location;
-            terminarz.UzytkownikWyk = null;
-            terminarz.DataWykonania = null;
-            terminarz.Klient = "Citronex Trans Logistic Sp. z o.o.";
-            terminarz.KlientId = 2708;
-            terminarz.Tabor = barcode.Substring(0, barcode.Length - 1);
-            terminarz.TaborId = auto.IdTaboru;
-            terminarz.Kierowca = null;
-            terminarz.KierowcaId = null;
-            terminarz.Lokalizacja = null;
-            terminarz.Powtarzalny = null;
-            terminarz.Interwal = null;
-            terminarz.InterwalTyp = null;
-            terminarz.KontrahenciCrmId = 1;
-            terminarz.KontrahenciCrm = null;
-            terminarz.TaborB = auto.NrInwent;
-            terminarz.ObjTyp = null;
-            terminarz.ObjId = null;
-
-            _context.Terminarz.Add(terminarz);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (TerminarzExists(terminarz.IdTerminarz))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Json(terminarz);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTerminarz([FromRoute] int id)
+        public async Task<IActionResult> DeleteScheduleAsync([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var terminarz = await _context.Terminarz.SingleOrDefaultAsync(m => m.IdTerminarz == id);
-            if (terminarz == null)
-            {
-                return NotFound();
-            }
-
-            _context.Terminarz.Remove(terminarz);
-            await _context.SaveChangesAsync();
-
-            return Ok(terminarz);
-        }
-
-        private bool TerminarzExists(int id)
-        {
-            return _context.Terminarz.Any(e => e.IdTerminarz == id);
-        }
-
-        private int GetNewTerminalId()
-        {
-            DbCommand cmd = _context.Database.GetDbConnection().CreateCommand();
-            cmd.CommandText = "[dbo].[GENER_ID]";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Clear();
-
-            SqlParameter p1 = new SqlParameter();
-            p1.ParameterName = "@GENER_NAME";
-            p1.DbType = DbType.String;
-            p1.Value = "GID_TERMINARZ";
-            p1.Direction = ParameterDirection.Input;
-            cmd.Parameters.Add(p1);
-
-
-            SqlParameter p2 = new SqlParameter();
-            p2.ParameterName = "@GenValue";
-            p2.DbType = DbType.Int32;
-            p2.Direction = ParameterDirection.Output;
-            cmd.Parameters.Add(p2);
-
             try
             {
-                _context.Database.OpenConnection();
-                cmd.ExecuteNonQuery();
-                int newID = Convert.ToInt32(cmd.Parameters["@GenValue"].Value);
-                _context.Database.CloseConnection();
-
-                return newID;
+                await _terminarzService.DeleteEntryAsync(id);
+                return NoContent();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                return NotFound(ex.Message);
             }
         }
     }

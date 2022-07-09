@@ -19,7 +19,6 @@ namespace SpeedRegisterApi.Controllers
             _mapper = mapper;
         }
 
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTabor([FromRoute] string id)
         {
