@@ -18,7 +18,7 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
-
+builder.WebHost.UseUrls("http://*:8080");
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
