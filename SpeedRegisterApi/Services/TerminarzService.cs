@@ -21,13 +21,13 @@ namespace SpeedRegisterApi.Services
             var description = SetDocumentType(mobileAppData);
             var carPlateNumber = mobileAppData.barcode.Replace(" ", "").ToUpper();
             carPlateNumber = carPlateNumber.Substring(0, (carPlateNumber.Length - 1));
-            var auto = await _taborRepository.GetTaborByCarNumberPlateAsync(carPlateNumber);
+            var vehicle = await _taborRepository.GetTaborByCarNumberPlateAsync(carPlateNumber);
             var terminarz = GenerateTerminarz();
             terminarz.Uzytkownik = mobileAppData.location;
             terminarz.Opis = description;
             terminarz.Tabor = carPlateNumber;
-            terminarz.TaborId = auto.IdTaboru;
-            terminarz.TaborB = auto.NrInwent;
+            terminarz.TaborId = vehicle.IdTaboru;
+            terminarz.TaborB = vehicle.NrInwent;
             try
             {
                 terminarz.IdTerminarz = await _terminarzRepository.AddTerminarz(terminarz);

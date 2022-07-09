@@ -3,33 +3,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpeedRegisterApi.Data;
 using SpeedRegisterApi.DTO;
+using SpeedRegisterApi.Repositories;
+using SpeedRegisterApi.Services;
 
 namespace SpeedRegisterApi.Controllers
 {
     public class TaborController : Controller
     {
 
-        private readonly InterlanDbContext _context;
+        private readonly ITaborService _taborService;
         public readonly IMapper _mapper;
 
-        public TaborController(InterlanDbContext context, IMapper mapper)
+        public TaborController(ITaborService taborService, IMapper mapper)
         {
-            _context = context;
+            _taborService = taborService;
             _mapper = mapper;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTabor([FromRoute] string id)
         {
-            List<TaborDto> taborList = new List<TaborDto>();
-            id = id.ToUpper().Replace(" ", "");
-            var tabor = await _context.Tabor.Where(nr => nr.NrRej.ToUpper().Replace(" ", "").Contains(id) && nr.Aktywny == 1).ToListAsync();
-            var taborDto = _mapper.Map<List<TaborDto>>(tabor);
-            if (taborDto != null)
+            try
+            {
+                var taborDto = await _taborService.GetTaborListByCarNumberPlateAsync(id);
                 return Ok(taborDto);
-            else
-                return BadRequest("No data found");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-
     }
 }

@@ -33,6 +33,7 @@ namespace SpeedRegisterApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return NotFound(ex.Message);
             }
 
@@ -44,12 +45,8 @@ namespace SpeedRegisterApi.Controllers
 
             if (!ModelState.IsValid)
             {
+                _logger.LogError("Invalid terminarz model");
                 return BadRequest(ModelState);
-            }
-
-            if (id != terminarz.IdTerminarz)
-            {
-                return BadRequest();
             }
 
             terminarz.IdTerminarz = id;
@@ -60,6 +57,7 @@ namespace SpeedRegisterApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return NotFound(ex.Message);
             }
 
@@ -76,6 +74,7 @@ namespace SpeedRegisterApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -90,6 +89,7 @@ namespace SpeedRegisterApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return NotFound(ex.Message);
             }
         }
