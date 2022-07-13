@@ -1,6 +1,6 @@
 ﻿namespace SpeedRegisterApi.Models
 {
-    public partial class Terminarz
+    public partial class Schedule
     {
         public int IdTerminarz { get; set; }
         public DateTime? Data { get; set; }

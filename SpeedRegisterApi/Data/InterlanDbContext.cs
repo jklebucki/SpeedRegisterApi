@@ -14,12 +14,12 @@ namespace SpeedRegisterApi.Data
         {
         }
 
-        public virtual DbSet<Tabor> Tabor { get; set; } = null!;
-        public virtual DbSet<Terminarz> Terminarz { get; set; } = null!;
+        public virtual DbSet<Fleet> Fleet { get; set; } = null!;
+        public virtual DbSet<Schedule> Schedule { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Tabor>(entity =>
+            modelBuilder.Entity<Fleet>(entity =>
             {
                 entity.HasKey(e => e.IdTaboru);
 
@@ -880,7 +880,7 @@ namespace SpeedRegisterApi.Data
                     .HasColumnName("ZDJECIE");
             });
 
-            modelBuilder.Entity<Terminarz>(entity =>
+            modelBuilder.Entity<Schedule>(entity =>
             {
                 entity.HasKey(e => e.IdTerminarz);
 

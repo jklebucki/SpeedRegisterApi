@@ -1,6 +1,6 @@
 ﻿namespace SpeedRegisterApi.DTO
 {
-    public class TaborDto
+    public class FleetDto
     {
         public int IdTaboru { get; set; }
         public string NrRej { get; set; }

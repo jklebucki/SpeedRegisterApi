@@ -8,19 +8,19 @@ namespace SpeedRegisterApi.Controllers
     [Route("api/Terminarz")]
     public class TerminarzController : Controller
     {
-        private readonly ITerminarzService _terminarzService;
+        private readonly IScheduleService _scheduleService;
         private readonly ILogger _logger;
 
-        public TerminarzController(ILogger<TerminarzController> ilogger, ITerminarzService terminarzService)
+        public TerminarzController(ILogger<TerminarzController> ilogger, IScheduleService scheduleService)
         {
-            _terminarzService = terminarzService;
+            _scheduleService = scheduleService;
             _logger = ilogger;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Terminarz>> GetTerminarz()
+        public async Task<IEnumerable<Schedule>> GetTerminarz()
         {
-            return await _terminarzService.GetFullTerminarzAsync();
+            return await _scheduleService.GetFullScheduleAsync();
         }
 
         [HttpGet("{id}")]
@@ -28,7 +28,7 @@ namespace SpeedRegisterApi.Controllers
         {
             try
             {
-                var terminarz = await _terminarzService.GetTerminarzAsync(id);
+                var terminarz = await _scheduleService.GetScheduleAsync(id);
                 return Ok(terminarz);
             }
             catch (Exception ex)
@@ -40,7 +40,7 @@ namespace SpeedRegisterApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTerminarz([FromRoute] int id, [FromBody] Terminarz terminarz)
+        public async Task<IActionResult> PutTerminarz([FromRoute] int id, [FromBody] Schedule terminarz)
         {
 
             if (!ModelState.IsValid)
@@ -53,7 +53,7 @@ namespace SpeedRegisterApi.Controllers
 
             try
             {
-                await _terminarzService.UpdateTerminarzAsync(terminarz);
+                await _scheduleService.UpdateScheduleAsync(terminarz);
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace SpeedRegisterApi.Controllers
         {
             try
             {
-                var terminarz = await _terminarzService.CreateNewEntryAsync(mobileAppData);
+                var terminarz = await _scheduleService.CreateNewEntryAsync(mobileAppData);
                 return Ok(terminarz);
             }
             catch (Exception ex)
@@ -84,7 +84,7 @@ namespace SpeedRegisterApi.Controllers
         {
             try
             {
-                await _terminarzService.DeleteEntryAsync(id);
+                await _scheduleService.DeleteEntryAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

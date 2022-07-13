@@ -9,12 +9,12 @@ namespace SpeedRegisterApi.Controllers
     public class TaborController : Controller
     {
 
-        private readonly ITaborService _taborService;
+        private readonly IFleetService _fleetService;
         public readonly IMapper _mapper;
 
-        public TaborController(ITaborService taborService, IMapper mapper)
+        public TaborController(IFleetService fleetService, IMapper mapper)
         {
-            _taborService = taborService;
+            _fleetService = fleetService;
             _mapper = mapper;
         }
 
@@ -23,7 +23,7 @@ namespace SpeedRegisterApi.Controllers
         {
             try
             {
-                var taborDto = await _taborService.GetTaborListByCarNumberPlateAsync(vehiclePlateNumber);
+                var taborDto = await _fleetService.GetFleetListByCarNumberPlateAsync(vehiclePlateNumber);
                 return Ok(taborDto);
             }
             catch (Exception ex)

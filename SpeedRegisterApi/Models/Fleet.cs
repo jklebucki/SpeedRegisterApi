@@ -1,6 +1,6 @@
 ﻿namespace SpeedRegisterApi.Models
 {
-    public partial class Tabor
+    public partial class Fleet
     {
         public int IdTaboru { get; set; }
         public string? KodKreskowy { get; set; }

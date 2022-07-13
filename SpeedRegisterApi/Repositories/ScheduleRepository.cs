@@ -7,22 +7,22 @@ using System.Data.Common;
 
 namespace SpeedRegisterApi.Repositories
 {
-    public class TerminarzRepository : ITerminarzRepository
+    public class ScheduleRepository : IScheduleRepository
     {
         private readonly InterlanDbContext _interlanDbContext;
         private readonly ILogger _logger;
 
-        public TerminarzRepository(InterlanDbContext interlanDbContext, ILogger<TerminarzRepository> logger)
+        public ScheduleRepository(InterlanDbContext interlanDbContext, ILogger<ScheduleRepository> logger)
         {
             _interlanDbContext = interlanDbContext;
             _logger = logger;
         }
 
-        public async Task<int> AddTerminarz(Terminarz terminarz)
+        public async Task<int> AddSchedule(Schedule schedule)
         {
             try
             {
-                await _interlanDbContext.AddAsync(terminarz);
+                await _interlanDbContext.AddAsync(schedule);
                 await _interlanDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -30,12 +30,12 @@ namespace SpeedRegisterApi.Repositories
                 _logger.LogError(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
                 throw new Exception("Error - I can't add a new entry");
             }
-            return terminarz.IdTerminarz;
+            return schedule.IdTerminarz;
         }
 
-        public async Task DeleteTerminarz(int terminarzId)
+        public async Task DeleteSchedule(int terminarzId)
         {
-            var terminarz = await _interlanDbContext.Terminarz.FirstOrDefaultAsync(t => t.IdTerminarz == terminarzId);
+            var terminarz = await _interlanDbContext.Schedule.FirstOrDefaultAsync(t => t.IdTerminarz == terminarzId);
             if (terminarz == null)
                 throw new Exception($"The schedule with id {terminarzId} does not exist.");
             try
@@ -50,25 +50,25 @@ namespace SpeedRegisterApi.Repositories
             }
         }
 
-        public async Task<IEnumerable<Terminarz>> GetFullTerminarz()
+        public async Task<IEnumerable<Schedule>> GetFullSchedule()
         {
-            return await _interlanDbContext.Terminarz.ToListAsync();
+            return await _interlanDbContext.Schedule.ToListAsync();
         }
 
-        public async Task<Terminarz> GetTerminarz(int terminarzId)
+        public async Task<Schedule> GetSchedule(int terminarzId)
         {
-            var terminarz = await _interlanDbContext.Terminarz.FirstOrDefaultAsync(t => t.IdTerminarz == terminarzId);
+            var terminarz = await _interlanDbContext.Schedule.FirstOrDefaultAsync(t => t.IdTerminarz == terminarzId);
             if (terminarz == null)
                 throw new Exception($"The schedule with id {terminarzId} does not exist.");
             return terminarz;
         }
 
-        public async Task UpdateTerminarz(Terminarz terminarz)
+        public async Task UpdateSchedule(Schedule schedule)
         {
             try
             {
-                _interlanDbContext.Entry(terminarz).State = EntityState.Modified;
-                _interlanDbContext.SaveChangesAsync();
+                _interlanDbContext.Entry(schedule).State = EntityState.Modified;
+                await _interlanDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -76,7 +76,7 @@ namespace SpeedRegisterApi.Repositories
                 throw new Exception("I can't update schedule");
             }
         }
-        public int GetNewTerminarzId()
+        public int GetNewScheduleId()
         {
             DbCommand cmd = _interlanDbContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "[dbo].[GENER_ID]";

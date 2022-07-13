@@ -19,7 +19,7 @@ namespace SpeedRegisterApi.Controllers
         public async Task<IActionResult> GetTerminarz()
         {
 
-            var terminarz = await _context.Terminarz.OrderBy(t => t.IdTerminarz).FirstOrDefaultAsync();
+            var terminarz = await _context.Schedule.OrderBy(t => t.IdTerminarz).FirstOrDefaultAsync();
 
             if (terminarz == null)
             {
@@ -34,7 +34,7 @@ namespace SpeedRegisterApi.Controllers
         public async Task<IActionResult> GetLastTerminarz()
         {
 
-            var terminarz = await _context.Terminarz.OrderBy(t => t.IdTerminarz).LastOrDefaultAsync();
+            var terminarz = await _context.Schedule.OrderBy(t => t.IdTerminarz).LastOrDefaultAsync();
 
             if (terminarz == null)
             {
@@ -49,7 +49,7 @@ namespace SpeedRegisterApi.Controllers
         public async Task<IActionResult> GetTabor()
         {
 
-            var tabor = await _context.Tabor.OrderBy(t => t.IdTaboru).FirstOrDefaultAsync();
+            var tabor = await _context.Fleet.OrderBy(t => t.IdTaboru).FirstOrDefaultAsync();
 
             if (tabor == null)
             {
@@ -64,7 +64,7 @@ namespace SpeedRegisterApi.Controllers
         public async Task<IActionResult> GetLastTabor()
         {
 
-            var tabor = await _context.Tabor.OrderBy(t => t.IdTaboru).LastOrDefaultAsync();
+            var tabor = await _context.Fleet.OrderBy(t => t.IdTaboru).LastOrDefaultAsync();
 
             if (tabor == null)
             {

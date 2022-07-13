@@ -8,7 +8,7 @@ namespace SpeedRegisterApi.Settings
     {
         public AutoMapperSettings()
         {
-            CreateMap<Tabor, TaborDto>()
+            CreateMap<Fleet, FleetDto>()
                 .ForMember(
                     dest => dest.IdTaboru,
                     opt => opt.MapFrom(src => src.IdTaboru)
